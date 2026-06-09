@@ -1,6 +1,15 @@
 {
   "widgets": [
     {
+      "title": "Welcome Banner",
+      "type": "demo_welcome_banner",
+      "category": "custom",
+      "source": {
+        "path": "widgets/community-stats",
+        "entry": "index.html"
+      }
+    },
+    {
       "title": "Countries HTML",
       "type": "demo_countries_html",
       "category": "custom",
