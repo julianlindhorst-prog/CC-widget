@@ -21,7 +21,7 @@
             "name": "subtext",
             "type": "text",
             "label": "Subtext",
-            "defaultValue": "Ask questions share ideas and connect with peers.",
+            "defaultValue": "Ask questions and connect with peers.",
             "rules": { "maxLength": 160 }
           },
           {
@@ -38,3 +38,30 @@
           }
         ]
       },
+      "defaultConfig": {
+        "headline": "Welcome to the Community",
+        "subtext": "Ask questions and connect with peers.",
+        "button_label": "Get Started",
+        "button_url": "#"
+      }
+    },
+    {
+      "title": "Countries HTML",
+      "type": "demo_countries_html",
+      "category": "custom",
+      "source": {
+        "path": "widgets/countries-html/dist",
+        "entry": "content.html"
+      }
+    },
+    {
+      "title": "Countries Vanilla",
+      "type": "demo_countries_vanilla",
+      "category": "custom",
+      "source": {
+        "path": "widgets/countries-vanilla/dist",
+        "entry": "index.html"
+      }
+    }
+  ]
+}
