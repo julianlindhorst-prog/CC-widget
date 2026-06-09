@@ -1,12 +1,14 @@
 <style>
   .banner {
-    font-family: var(--config--main-font-family, sans-serif);
+    font-family: sans-serif;
     padding: 32px;
     border-radius: 10px;
-    background: var(--config--main-color-brand, #1B3A6B);
+    background: #1B3A6B;
     color: #ffffff;
     text-align: center;
-    min-height: 120px;
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
   }
   .banner h2 {
     margin: 0 0 12px;
@@ -19,5 +21,16 @@
   .banner a {
     display: inline-block;
     background: #ffffff;
-    color: var(--config--main-color-brand, #1B3A6B);
-    padding
+    color: #1B3A6B;
+    padding: 10px 24px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: bold;
+  }
+</style>
+
+<div class="banner">
+  <h2>Welcome to the Community</h2>
+  <p>Ask questions, share ideas and connect with peers.</p>
+  <a href="#">Get Started</a>
+</div>
