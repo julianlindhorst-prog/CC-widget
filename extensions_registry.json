@@ -1,45 +1,40 @@
 {
   "widgets": [
     {
-      "title": "Welcome Banner",
-      "type": "demo_welcome_banner",
-      "description": "A configurable welcome banner for the homepage",
+      "title": "Countries HTML",
+      "type": "demo_countries_html",
       "category": "custom",
       "source": {
-        "path": "widgets/community-stats",
-        "entry": "index.html"
-      },
-      "configuration": {
-        "properties": [
-          {
-            "name": "headline",
-            "type": "text",
-            "label": "Headline",
-            "defaultValue": "Welcome to the Community",
-            "rules": { "required": true, "maxLength": 80 }
-          },
-          {
-            "name": "subtext",
-            "type": "text",
-            "label": "Subtext",
-            "defaultValue": "Ask questions, share ideas, connect with peers.",
-            "rules": { "maxLength": 160 }
-          },
-          {
-            "name": "button_label",
-            "type": "text",
-            "label": "Button Label",
-            "defaultValue": "Get Started"
-          },
-          {
-            "name": "button_url",
-            "type": "text",
-            "label": "Button URL",
-            "defaultValue": "#"
-          }
-        ]
-      },
-      "defaultConfig": {
-        "headline": "Welcome to the Community",
-        "subtext": "Ask questions, share ideas, connect with peers.",
-        "button_label": "
+        "path": "widgets/countries-html/dist",
+        "entry": "content.html"
+      }
+    },
+    {
+      "title": "Countries Vanilla",
+      "type": "demo_countries_vanilla",
+      "category": "custom",
+      "source": {
+        "path": "widgets/countries-vanilla/dist",
+        "entry": "content.html"
+      }
+    },
+    {
+      "title": "Countries React",
+      "type": "demo_countries_react",
+      "category": "custom",
+      "source": {
+        "path": "widgets/countries-react/dist",
+        "entry": "content.html"
+      }
+    },
+    {
+      "title": "Countries Vue",
+      "type": "demo_countries_vue",
+      "category": "custom",
+      "source": {
+        "path": "widgets/countries-vue/dist",
+        "entry": "content.html"
+      }
+    }
+  ]
+}
