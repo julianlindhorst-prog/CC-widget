@@ -7,25 +7,34 @@
       "source": {
         "path": "widgets/community-stats",
         "entry": "index.html"
-      }
-    },
-    {
-      "title": "Countries HTML",
-      "type": "demo_countries_html",
-      "category": "custom",
-      "source": {
-        "path": "widgets/countries-html/dist",
-        "entry": "content.html"
-      }
-    },
-    {
-      "title": "Countries Vanilla",
-      "type": "demo_countries_vanilla",
-      "category": "custom",
-      "source": {
-        "path": "widgets/countries-vanilla/dist",
-        "entry": "index.html"
-      }
-    }
-  ]
-}
+      },
+      "configuration": {
+        "properties": [
+          {
+            "name": "headline",
+            "type": "text",
+            "label": "Headline",
+            "defaultValue": "Welcome to the Community",
+            "rules": { "required": true, "maxLength": 80 }
+          },
+          {
+            "name": "subtext",
+            "type": "text",
+            "label": "Subtext",
+            "defaultValue": "Ask questions share ideas and connect with peers.",
+            "rules": { "maxLength": 160 }
+          },
+          {
+            "name": "button_label",
+            "type": "text",
+            "label": "Button Label",
+            "defaultValue": "Get Started"
+          },
+          {
+            "name": "button_url",
+            "type": "text",
+            "label": "Button URL",
+            "defaultValue": "#"
+          }
+        ]
+      },
