@@ -42,19 +42,4 @@
       "defaultConfig": {
         "headline": "Welcome to the Community",
         "subtext": "Ask questions, share ideas, connect with peers.",
-        "button_label": "Get Started",
-        "button_url": "#"
-      }
-    },
-    {
-      "title": "Countries HTML",
-      "type": "demo_countries_html",
-      "description": "A widget built with HTML and the Widget SDK.",
-      "category": "custom",
-      "source": {
-        "path": "widgets/countries-html/dist",
-        "entry": "content.html"
-      }
-    }
-  ]
-}
+        "button_label": "
