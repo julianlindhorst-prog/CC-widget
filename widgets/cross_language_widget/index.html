@@ -6,7 +6,6 @@
     color: #1a1a1a;
     line-height: 1.5;
   }
-
   .cl-heading {
     font-size: 15px;
     font-weight: 700;
@@ -14,25 +13,14 @@
     padding-bottom: 10px;
     border-bottom: 2px solid #f0f0f0;
   }
-
-  .cl-list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-
+  .cl-list { list-style: none; margin: 0; padding: 0; }
   .cl-item {
     padding: 9px 0;
     border-bottom: 1px solid #f3f3f3;
     display: flex;
     align-items: flex-start;
   }
-
-  .cl-item:last-child {
-    border-bottom: none;
-    padding-bottom: 0;
-  }
-
+  .cl-item:last-child { border-bottom: none; padding-bottom: 0; }
   .cl-badge {
     flex-shrink: 0;
     margin-top: 2px;
@@ -45,17 +33,10 @@
     background: #eef2ff;
     color: #4f5eff;
   }
-
-  .cl-badge--question    { background: #fff4e5; color: #c47b00; }
-  .cl-badge--article     { background: #e9f9ee; color: #1a7f3c; }
-  .cl-badge--idea        { background: #fdf2ff; color: #9b30c8; }
-
-  .cl-content {
-    flex: 1;
-    min-width: 0;
-    margin-left: 8px;
-  }
-
+  .cl-badge--question { background: #fff4e5; color: #c47b00; }
+  .cl-badge--article  { background: #e9f9ee; color: #1a7f3c; }
+  .cl-badge--idea     { background: #fdf2ff; color: #9b30c8; }
+  .cl-content { flex: 1; min-width: 0; margin-left: 8px; }
   .cl-link {
     display: block;
     font-size: 13.5px;
@@ -66,21 +47,9 @@
     overflow: hidden;
     text-overflow: ellipsis;
   }
-
   .cl-link:hover { color: #4f5eff; text-decoration: underline; }
-
-  .cl-meta {
-    font-size: 11.5px;
-    color: #888;
-    margin-top: 2px;
-  }
-
-  .cl-footer {
-    margin-top: 14px;
-    padding-top: 12px;
-    border-top: 1px solid #f0f0f0;
-  }
-
+  .cl-meta { font-size: 11.5px; color: #888; margin-top: 2px; }
+  .cl-footer { margin-top: 14px; padding-top: 12px; border-top: 1px solid #f0f0f0; }
   .cl-cta {
     display: inline-flex;
     align-items: center;
@@ -89,16 +58,8 @@
     color: #4f5eff;
     text-decoration: none;
   }
-
   .cl-cta:hover { text-decoration: underline; }
-
-  .cl-state {
-    padding: 20px 0;
-    text-align: center;
-    color: #aaa;
-    font-size: 13px;
-  }
-
+  .cl-state { padding: 20px 0; text-align: center; color: #aaa; font-size: 13px; }
   .cl-spinner {
     display: inline-block;
     width: 18px;
@@ -109,178 +70,171 @@
     animation: spin 0.7s linear infinite;
     margin-bottom: 8px;
   }
-
   @keyframes spin { to { transform: rotate(360deg); } }
-
   .cl-error { color: #c0392b; }
 </style>
 
-<div id="root"></div>
+<div id="root">
+  <div class="cl-state">
+    <div class="cl-spinner"></div><br>Loading content...
+  </div>
+</div>
 
 <script>
-// -------------------------------------------------------
-// Widget config is read from props set in No-Code Builder.
-// Props defined in extensions_registry.json under "configuration".
-// Fallback values are used for development.
-// -------------------------------------------------------
-export async function init(sdk) {
-  await sdk.whenReady();
+(function () {
 
-  const root = sdk.$('#root');
-
-  // Show loading state
-  root.innerHTML = '<div class="cl-state"><div class="cl-spinner"></div><br>Loading content...</div>';
-
-  // Read props configured in No-Code Builder
-  const props = sdk.getProps();
-
-  const CONNECTORS = (props.connectors || '').split(',').map(function(s) { return s.trim(); }).filter(Boolean);
-  const HEADING    = props.heading  || 'Related content';
-  const CTA_LABEL  = props.ctaLabel || 'See all';
-  const CTA_URL    = props.ctaUrl   || '#';
-  const LIMIT      = parseInt(props.limit || '10', 10);
-  const SORT       = props.sort     || 'lastActivityAt';
-  const COMMUNITY  = props.communityUrl || 'https://community.personio.de';
-
-  if (!CONNECTORS.length) {
-    root.innerHTML = '<div class="cl-state cl-error">No connectors configured.</div>';
-    return;
+  // Wait for the SDK to be available
+  function waitForSDK(cb) {
+    if (typeof window.WidgetServiceSDK !== 'undefined') {
+      cb();
+    } else {
+      setTimeout(function () { waitForSDK(cb); }, 50);
+    }
   }
 
-  // Re-render when props change in No-Code Builder
-  sdk.on('propsChanged', function() {
-    sdk.emit('reinit');
-  });
+  waitForSDK(function () {
 
-  // Call connector via WidgetServiceSDK
-  function executeConnector(permalink) {
-    var widgetSdk = new window.WidgetServiceSDK();
-    return widgetSdk.connectors.execute({ permalink: permalink, method: 'GET' })
-      .then(function(r) {
-        if (r && Array.isArray(r.result)) return r.result;
-        if (Array.isArray(r)) return r;
-        console.warn('[cl-widget] Unexpected shape from', permalink, r);
-        return [];
-      })
-      .catch(function(err) {
-        console.warn('[cl-widget] Connector failed:', permalink, err);
-        return [];
-      });
-  }
+    var sdk = new window.WidgetServiceSDK();
+    var root = document.getElementById('root');
 
-  function mergeTopics(arrays) {
-    var seen = {}, flat = [];
-    arrays.forEach(function(arr) {
-      arr.forEach(function(t) {
-        if (!seen[t.id]) { seen[t.id] = true; flat.push(t); }
-      });
-    });
-    flat.sort(function(a, b) {
-      if (SORT === 'lastActivityAt' || SORT === 'createdAt') {
-        return new Date(b[SORT]) - new Date(a[SORT]);
-      }
-      return (b[SORT] || 0) - (a[SORT] || 0);
-    });
-    return flat.slice(0, LIMIT);
-  }
+    // Read props from No-Code Builder configuration
+    var props = (typeof sdk.getProps === 'function') ? sdk.getProps() : {};
 
-  function badgeClass(ct) {
-    var t = (ct || '').toLowerCase();
-    if (t === 'question') return 'cl-badge cl-badge--question';
-    if (t === 'article')  return 'cl-badge cl-badge--article';
-    if (t === 'idea')     return 'cl-badge cl-badge--idea';
-    return 'cl-badge';
-  }
+    var CONNECTORS   = ((props.connectors || 'personio-cc-topics-de-cat-163')).split(',').map(function(s) { return s.trim(); }).filter(Boolean);
+    var HEADING      = props.heading     || 'Related content';
+    var CTA_LABEL    = props.ctaLabel    || 'See all';
+    var CTA_URL      = props.ctaUrl      || 'https://community.personio.de';
+    var LIMIT        = parseInt(props.limit || '10', 10);
+    var SORT         = props.sort        || 'lastActivityAt';
+    var COMMUNITY    = props.communityUrl || 'https://community.personio.de';
 
-  function badgeLabel(ct) {
-    var m = { question: 'Q', article: 'Article', conversation: 'Post', idea: 'Idea' };
-    return m[(ct || '').toLowerCase()] || 'Post';
-  }
-
-  function timeAgo(d) {
-    if (!d) return '';
-    var diff = Date.now() - new Date(d).getTime();
-    var m = Math.floor(diff / 60000), h = Math.floor(diff / 3600000), dy = Math.floor(diff / 86400000);
-    if (m < 2)   return 'just now';
-    if (m < 60)  return m + 'm ago';
-    if (h < 24)  return h + 'h ago';
-    if (dy < 30) return dy + 'd ago';
-    return new Date(d).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' });
-  }
-
-  function render(topics) {
-    if (!topics.length) {
-      root.innerHTML = '<div class="cl-state">No content available right now.</div>';
-      return;
+    function executeConnector(permalink) {
+      return sdk.connectors.execute({ permalink: permalink, method: 'GET' })
+        .then(function (r) {
+          if (r && Array.isArray(r.result)) return r.result;
+          if (Array.isArray(r)) return r;
+          console.warn('[cl-widget] Unexpected shape from', permalink, r);
+          return [];
+        })
+        .catch(function (err) {
+          console.warn('[cl-widget] Connector failed:', permalink, err);
+          return [];
+        });
     }
 
-    var heading = document.createElement('div');
-    heading.className = 'cl-heading';
-    heading.textContent = HEADING;
+    function mergeTopics(arrays) {
+      var seen = {}, flat = [];
+      arrays.forEach(function (arr) {
+        arr.forEach(function (t) {
+          if (!seen[t.id]) { seen[t.id] = true; flat.push(t); }
+        });
+      });
+      flat.sort(function (a, b) {
+        if (SORT === 'lastActivityAt' || SORT === 'createdAt') {
+          return new Date(b[SORT]) - new Date(a[SORT]);
+        }
+        return (b[SORT] || 0) - (a[SORT] || 0);
+      });
+      return flat.slice(0, LIMIT);
+    }
 
-    var ul = document.createElement('ul');
-    ul.className = 'cl-list';
+    function badgeClass(ct) {
+      var t = (ct || '').toLowerCase();
+      if (t === 'question') return 'cl-badge cl-badge--question';
+      if (t === 'article')  return 'cl-badge cl-badge--article';
+      if (t === 'idea')     return 'cl-badge cl-badge--idea';
+      return 'cl-badge';
+    }
 
-    topics.forEach(function(t) {
-      var url  = COMMUNITY + '/' + t.publicId;
-      var meta = (t.replyCount != null
-        ? t.replyCount + ' ' + (t.replyCount === 1 ? 'reply' : 'replies') + ' \u00b7 '
-        : '') + timeAgo(t.lastActivityAt || t.createdAt);
+    function badgeLabel(ct) {
+      var m = { question: 'Q', article: 'Article', conversation: 'Post', idea: 'Idea' };
+      return m[(ct || '').toLowerCase()] || 'Post';
+    }
 
-      var li = document.createElement('li');
-      li.className = 'cl-item';
+    function timeAgo(d) {
+      if (!d) return '';
+      var diff = Date.now() - new Date(d).getTime();
+      var m = Math.floor(diff / 60000), h = Math.floor(diff / 3600000), dy = Math.floor(diff / 86400000);
+      if (m < 2)   return 'just now';
+      if (m < 60)  return m + 'm ago';
+      if (h < 24)  return h + 'h ago';
+      if (dy < 30) return dy + 'd ago';
+      return new Date(d).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' });
+    }
 
-      var badge = document.createElement('span');
-      badge.className = badgeClass(t.contentType);
-      badge.textContent = badgeLabel(t.contentType);
+    function render(topics) {
+      if (!topics.length) {
+        root.innerHTML = '<div class="cl-state">No content available right now.</div>';
+        return;
+      }
 
-      var content = document.createElement('div');
-      content.className = 'cl-content';
+      var heading = document.createElement('div');
+      heading.className = 'cl-heading';
+      heading.textContent = HEADING;
 
-      var a = document.createElement('a');
-      a.className = 'cl-link';
-      a.href = url;
-      a.target = '_blank';
-      a.rel = 'noopener';
-      a.title = t.title || '';
-      a.textContent = t.title || 'Untitled';
+      var ul = document.createElement('ul');
+      ul.className = 'cl-list';
 
-      var metaEl = document.createElement('div');
-      metaEl.className = 'cl-meta';
-      metaEl.textContent = meta;
+      topics.forEach(function (t) {
+        var url  = COMMUNITY + '/' + t.publicId;
+        var meta = (t.replyCount != null
+          ? t.replyCount + ' ' + (t.replyCount === 1 ? 'reply' : 'replies') + ' \u00b7 '
+          : '') + timeAgo(t.lastActivityAt || t.createdAt);
 
-      content.appendChild(a);
-      content.appendChild(metaEl);
-      li.appendChild(badge);
-      li.appendChild(content);
-      ul.appendChild(li);
-    });
+        var li      = document.createElement('li');
+        li.className = 'cl-item';
 
-    var footer = document.createElement('div');
-    footer.className = 'cl-footer';
+        var badge   = document.createElement('span');
+        badge.className  = badgeClass(t.contentType);
+        badge.textContent = badgeLabel(t.contentType);
 
-    var cta = document.createElement('a');
-    cta.className = 'cl-cta';
-    cta.href = CTA_URL;
-    cta.target = '_blank';
-    cta.rel = 'noopener';
-    cta.textContent = CTA_LABEL + ' \u2192';
-    footer.appendChild(cta);
+        var content = document.createElement('div');
+        content.className = 'cl-content';
 
-    root.innerHTML = '';
-    root.appendChild(heading);
-    root.appendChild(ul);
-    root.appendChild(footer);
-  }
+        var a       = document.createElement('a');
+        a.className  = 'cl-link';
+        a.href       = url;
+        a.target     = '_blank';
+        a.rel        = 'noopener';
+        a.title      = t.title || '';
+        a.textContent = t.title || 'Untitled';
 
-  // Load data
-  Promise.all(CONNECTORS.map(executeConnector))
-    .then(function(results) {
-      render(mergeTopics(results));
-    })
-    .catch(function(err) {
-      console.error('[cl-widget]', err);
-      root.innerHTML = '<div class="cl-state cl-error">Could not load content.</div>';
-    });
-}
+        var metaEl  = document.createElement('div');
+        metaEl.className  = 'cl-meta';
+        metaEl.textContent = meta;
+
+        content.appendChild(a);
+        content.appendChild(metaEl);
+        li.appendChild(badge);
+        li.appendChild(content);
+        ul.appendChild(li);
+      });
+
+      var footer  = document.createElement('div');
+      footer.className = 'cl-footer';
+
+      var cta     = document.createElement('a');
+      cta.className  = 'cl-cta';
+      cta.href       = CTA_URL;
+      cta.target     = '_blank';
+      cta.rel        = 'noopener';
+      cta.textContent = CTA_LABEL + ' \u2192';
+      footer.appendChild(cta);
+
+      root.innerHTML = '';
+      root.appendChild(heading);
+      root.appendChild(ul);
+      root.appendChild(footer);
+    }
+
+    Promise.all(CONNECTORS.map(executeConnector))
+      .then(function (results) { render(mergeTopics(results)); })
+      .catch(function (err) {
+        console.error('[cl-widget]', err);
+        root.innerHTML = '<div class="cl-state cl-error">Could not load content.</div>';
+      });
+
+  });
+
+})();
 </script>
