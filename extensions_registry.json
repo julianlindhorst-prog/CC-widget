@@ -62,6 +62,65 @@
         "path": "widgets/countries-vanilla/dist",
         "entry": "index.html"
       }
+    },
+    {
+      "version": "1.0.0",
+      "title": "Cross-Language Content",
+      "type": "personio_cross_language_content",
+      "description": "Shows recent topics from a configurable set of categories or groups, regardless of their community language.",
+      "category": "custom",
+      "containers": ["Full width", "Sidebar"],
+      "widgetsLibrary": true,
+      "settings": {
+        "configurable": true,
+        "editable": true,
+        "removable": true,
+        "shared": false,
+        "movable": true
+      },
+      "source": {
+        "path": "widgets/cross_language_widget",
+        "entry": "index.html"
+      },
+      "configuration": {
+        "properties": {
+          "heading": {
+            "type": "string",
+            "title": "Section heading",
+            "default": "Related content"
+          },
+          "ctaLabel": {
+            "type": "string",
+            "title": "CTA button label",
+            "default": "See all"
+          },
+          "ctaUrl": {
+            "type": "string",
+            "title": "CTA URL",
+            "default": "https://community.personio.de"
+          },
+          "connectors": {
+            "type": "string",
+            "title": "Connector permalinks (comma-separated)",
+            "default": "personio-cc-topics-de-cat-163"
+          },
+          "limit": {
+            "type": "string",
+            "title": "Max topics to show",
+            "default": "10"
+          },
+          "sort": {
+            "type": "string",
+            "title": "Sort field",
+            "default": "lastActivityAt"
+          },
+          "communityUrl": {
+            "type": "string",
+            "title": "Community base URL",
+            "default": "https://julian-en-community.insided.com"
+          }
+        }
+      }
     }
   ]
 }
