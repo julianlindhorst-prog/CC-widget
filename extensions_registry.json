@@ -83,43 +83,15 @@
         "entry": "index.html"
       },
       "configuration": {
-        "properties": {
-          "heading": {
-            "type": "string",
-            "title": "Section heading",
-            "default": "Related content"
-          },
-          "ctaLabel": {
-            "type": "string",
-            "title": "CTA button label",
-            "default": "See all"
-          },
-          "ctaUrl": {
-            "type": "string",
-            "title": "CTA URL",
-            "default": "https://community.personio.de"
-          },
-          "connectors": {
-            "type": "string",
-            "title": "Connector permalinks (comma-separated)",
-            "default": "personio-cc-topics-de-cat-163"
-          },
-          "limit": {
-            "type": "string",
-            "title": "Max topics to show",
-            "default": "10"
-          },
-          "sort": {
-            "type": "string",
-            "title": "Sort field",
-            "default": "lastActivityAt"
-          },
-          "communityUrl": {
-            "type": "string",
-            "title": "Community base URL",
-            "default": "https://julian-en-community.insided.com"
-          }
-        }
+        "properties": [
+          { "name": "heading", "type": "text", "label": "Section heading", "defaultValue": "Related content" },
+          { "name": "ctaLabel", "type": "text", "label": "CTA button label", "defaultValue": "See all" },
+          { "name": "ctaUrl", "type": "text", "label": "CTA URL", "defaultValue": "https://community.personio.de" },
+          { "name": "connectors", "type": "text", "label": "Connector permalinks (comma-separated)", "defaultValue": "personio-cc-topics-de-cat-163" },
+          { "name": "limit", "type": "text", "label": "Max topics to show", "defaultValue": "10" },
+          { "name": "sort", "type": "text", "label": "Sort field", "defaultValue": "lastActivityAt" },
+          { "name": "communityUrl", "type": "text", "label": "Community base URL", "defaultValue": "https://julian-en-community.insided.com" }
+        ]
       }
     }
   ]
